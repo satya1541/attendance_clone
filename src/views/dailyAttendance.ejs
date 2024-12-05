@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin: 20px auto;
+            width: 80%;
+            /* max-width: 600px; */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Daily Attendance Details Department:(<%=department%>) AND Date:(<%=date%>)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Entry Time</th>
+                    <th>Exit Time</th>
+                    <th>Department</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let serialNo=1; %>
+                    <% data.forEach(employee=> { %>
+                        <tr>
+                            <td>
+                                <%= serialNo++ %>
+                            </td>
+                            <td>
+                                <%= employee.employeeId %>
+                            </td>
+                            <td>
+                                <%= employee.name %>
+                            </td>
+                            <td>
+                                <%= employee.entryTime %>
+                            </td>
+                            <td>
+                                <%= employee.exitTime %>
+                            </td>
+                            <td>
+                                <%= employee.departMent %>
+                            </td>
+                            <td>
+                                <%= employee.formattedDate %>
+                            </td>
+                        </tr>
+                        <% }); %>
+            </tbody>
+        </table>
+        <a href="/" class="home-link"><b>Go to Home Page</b></a>
+    </div>
+</body>
+
+</html>

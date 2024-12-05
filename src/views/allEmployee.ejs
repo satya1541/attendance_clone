@@ -1,0 +1,259 @@
+<!-- views/allEmployees.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Employees</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        select,
+        button {
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: blue;
+        }
+
+        input {
+            border: none;
+            font-size: large;
+        }
+
+        /* Responsive styling for smaller screens */
+        @media screen and (max-width: 600px) {
+            table {
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding: 8px;
+            }
+        }
+
+        .nav-link {
+            color: #4CAF50;
+            display: block;
+            margin-top: 20px;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .nav-link:hover {
+            color: blue;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-link {
+            padding: 8px;
+            margin: 0 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+        }
+
+        .page-link:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>All Employees</h1>
+
+    <form id="filterForm">
+        <label for="departmentFilter">Filter by Department:</label>
+        <select id="departmentFilter" name="departmentFilter" required>
+            <option value="ALL">ALL</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="TECH">TECH</option>
+            <option value="OPERATION">OPERATION</option>
+        </select>
+
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+    <a href="/" class="nav-link">Go to Home Page</a>
+    <table id="employeeTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Tag ID</th>
+                <th>Department</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table content will be dynamically added here -->
+        </tbody>
+
+    </table>
+
+    <script>
+        function submitForm() {
+            const form = document.getElementById('filterForm');
+            const table = document.getElementById('employeeTable');
+            const tbody = table.querySelector('tbody');
+
+            if (!tbody) {
+                console.error('tbody not found');
+                return;
+            }
+
+            tbody.innerHTML = '';
+
+            const selectedDepartment = form.departmentFilter.value;
+
+            fetch(`/employeeDetaisDepartMentWise?departMent=${selectedDepartment}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!Array.isArray(data.employees)) {
+                        throw new Error('Invalid response format. Expected an array.');
+                    }
+
+                    data.employees.forEach(employee => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><input type="text" value="${employee.employeeId}" readonly></td>
+                            <td><input type="text" name="${employee.employeeId}name"  value="${employee.name}"></td>
+                            <td><input type="text" name="${employee.employeeId}tagId" value="${employee.tagId}"></td>
+                            <td><input type="text" name="${employee.employeeId}departMent"  value="${employee.departMent}"></td>
+                            <td>
+                                <button onclick="update('${employee.employeeId}')">Update</button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    table.style.display = 'table';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching data. Please try again.');
+                });
+        }
+
+        function update(employeeId, button) {
+            const selectedDepartment = document.getElementById('departmentFilter').value;
+
+            // Get the updated values from the input fields
+            const updatedName = document.querySelector(`input[name="${employeeId}name"]`).value;
+            const updatedTagId = document.querySelector(`input[name="${employeeId}tagId"]`).value;
+            const updatedDepartment = document.querySelector(`input[name="${employeeId}departMent"]`).value;
+
+            // Prepare the data to be sent in the request body
+            const updatedData = {
+                name: updatedName,
+                tagId: updatedTagId,
+                departMent: updatedDepartment,
+            };
+
+            fetch(`/employeeDetailsUpdate/${employeeId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData), // Convert the data to JSON format
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Data does not update');
+                        // return response.json();
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Check if the response has a message
+                    // console.log(data);
+                    if (data.message) {
+                        alert(data.message); // Show the alert message
+
+                        // Add a class to the row for styling
+                        // const row = button.closest('tr');
+                        // row.classList.add('updated-row');
+                    }
+                })
+                .catch(data => {
+                    // console.log(data);
+                    console.error('Error:', data.message);
+                    alert(data);
+                });
+        }
+    </script>
+
+
+
+</body>
+
+</html>

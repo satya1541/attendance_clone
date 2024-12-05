@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chipl Attendance</title>
+    <style>
+        /* Your existing styles remain unchanged */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            background-color: #f9f9f9;
+        }
+
+        /* Navbar styles */
+        nav {
+            overflow: hidden;
+            text-align: center;
+            color: black;
+            font-weight: bolder;
+            font-style: italic;
+        }
+
+        .forms-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .form-container {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: medium;
+        }
+
+        button:hover {
+            background-color: blue;
+        }
+
+        .nav-links {
+            /* margin-top: 0px; */
+            font-weight: bold;
+        }
+
+        .nav-link {
+            /* text-decoration: none; */
+            color: #4CAF50;
+            margin: 0 30px;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .nav-link:hover {
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="active">Chipl Attendance</h1>
+
+    <nav>
+        <div class="nav-links">
+            <a href="./addEmployee" class="nav-link">Add Employee</a>
+            <a href="./allEmployee" class="nav-link">View All Employees</a>
+        </div>
+    </nav>
+    <!-- ----------------===================================WORKING HOURS-==================================--------------- -->
+    <div class="forms-container">
+        <div class="form-container" id="attendanceForm">
+            <h2>Total Attendance Details Including Working Hours</h2>
+            <form action="/attendanceDetailsWorkingHours" method="get" onsubmit="return validateForm('dateForm')">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate" required>
+
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate" required>
+
+                <button type="submit">Download Details</button>
+                <button type="button" onclick="totalAttendance()">View Details</button>
+            </form>
+        </div>
+        <!-- -----------------------=========================attendanceDetailsEmployeeWise======================----------------------------- -->
+        <div class="form-container" id="employeeForm">
+            <h2>Attendance Details of an Employee</h2>
+            <form id="validate" action="/attendanceDetailsEmployeeWise" method="get"
+                onsubmit="return validateDate('validate')">
+                <!-- <label for="employeeId">Select Employee:</label> -->
+                <select id="employeeId" name="employeeId" required>
+                    <option value="">Select Employee Id:</option>
+                    <% employees.forEach(employee=> { %>
+
+                        <option value="<%= employee.employeeId %>">
+                            <%= employee.employeeId %> - <%= employee.name %>
+                        </option>
+                        <% }); %>
+                </select>
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="Estart" name="startDate" required>
+
+                <label for="endDate">End Date:</label>
+                <input type="date" id="EendDate" name="endDate" required>
+                <button type="submit">Download Details</button>
+
+                <button type="button" onclick="getEmployeeAttendance()">View Details</button>
+                <!-- Button to call API -->
+            </form>
+        </div>
+
+        <!-- ==============================Additional Form for Department and Date ========================-->
+        <div class="form-container" id="departmentDateForm">
+            <h2>Daily Attendance Details Department-Wise </h2>
+            <form action="/attendanceDetailsDepartMentWise" method="get"
+                onsubmit="return validateForm('departmentDateForm')">
+                <!-- <label for="additionalDepartment">Select Department:</label> -->
+                <select id="additionalDepartment" name="departMent" required>
+                    <option value="">Select Department:</option>
+                    <option value="ALL">ALL</option>
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="TECH">TECH</option>
+                    <option value="OPERATION">OPERATION</option>
+                </select>
+
+                <label for="additionalDate">Date:</label>
+                <input type="date" id="additionalDate" name="date" required>
+
+                <button type="submit">Download Details</button>
+                <!-- New button for API call -->
+                <button type="button" onclick="fetchDaily()">View Details</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="attendanceResults"></div>
+
+    <script>
+        const url=`http://46.28.44.138:5000/`
+        function validateForm(formId) {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (formId === 'dateForm' && startDate > endDate) {
+                alert('End date must be equal to or after the start date.');
+                return false;
+            }
+            return true;
+        }
+
+        function validateDate(formId) {
+            const start = document.getElementById('Estart').value;
+            const end = document.getElementById('EendDate').value;
+            if (formId == 'validate' && start > end) {
+                alert('End date must be equal to or after the start date.');
+                return false;
+            }
+            return true;
+        }
+        
+        function fetchDaily() {
+            const department = document.getElementById('additionalDepartment').value;
+            const date = document.getElementById('additionalDate').value;
+            const apiUrl = `/getDailyDepartment?department=${department}&date=${date}`;
+            if (!department || !date) {
+                alert("Please Fill Up Valid Data.....");
+                    window.location.href = '/';
+            }else{
+                const apiUrl = `${url}daily?department=${department}&date=${date}`
+                window.location.href = apiUrl;
+            }
+        }
+
+        function totalAttendance() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                alert("Please Fill Up Valid Data.....");
+                    window.location.href = '/';
+            }else{
+                const apiUrl = `${url}total?startDate=${startDate}&endDate=${endDate}`
+                window.location.href = apiUrl;
+            }
+        }
+
+        function getEmployeeAttendance() {
+            const employeeId = document.getElementById('employeeId').value;
+            const startDate = document.getElementById('Estart').value;
+            const endDate = document.getElementById('EendDate').value;
+
+            // Construct your API URL. You might need to adjust this.
+            if (!employeeId || !startDate) {
+                alert("Please Fill Up Valid Data.....");
+                    window.location.href = '/';
+            }else{
+                const apiUrl = `${url}employee?employeeId=${employeeId}&startDate=${startDate}&endDate=${endDate}`
+                window.location.href = apiUrl;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

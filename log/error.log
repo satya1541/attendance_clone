@@ -1,0 +1,15 @@
+[2024-04-03 04:34:50 PM] error: Unable to connect to the database: SequelizeAccessDeniedError: Access denied for user 'root'@'localhost' (using password: YES)
+Error
+    at console.error (F:\CHIPL_PROJECT\CHIPL Project\Chipl-Attendance-Api\src\config\logger.js:35:19)
+    at F:\CHIPL_PROJECT\CHIPL Project\Chipl-Attendance-Api\src\config\dbConnection.js:21:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[2024-05-10 05:13:28 PM] error: Unable to connect to the database: SequelizeConnectionRefusedError
+Error
+    at console.error (F:\CHIPL_PROJECT\CHIPL Project\Chipl-Attendance-Api\src\config\logger.js:35:19)
+    at F:\CHIPL_PROJECT\CHIPL Project\Chipl-Attendance-Api\src\config\dbConnection.js:21:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[2024-05-10 05:13:38 PM] error: Unable to connect to the database: SequelizeConnectionRefusedError
+Error
+    at console.error (F:\CHIPL_PROJECT\CHIPL Project\Chipl-Attendance-Api\src\config\logger.js:35:19)
+    at F:\CHIPL_PROJECT\CHIPL Project\Chipl-Attendance-Api\src\config\dbConnection.js:21:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)

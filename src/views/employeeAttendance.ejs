@@ -1,0 +1,100 @@
+<!-- employeeAttendanceDetails.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Employee</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            margin: 20px auto;
+            width: 80%;
+            /* max-width: 600px; */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Attendance Details of  <%=employeeId %></h2>
+        <% if (startDate && endDate) { %>
+            <h2>From <%= startDate %> to <%= endDate %></h2>
+        <% } %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Entry Time</th>
+                    <th>Exit Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let serialNo = 1; %>
+                <% data.forEach(entry => { %>
+                    <tr>
+                        <td><%= serialNo++ %></td>
+                        <td><%= entry.employeeId %></td>
+                        <td><%= entry.name %></td>
+                        <td><%= entry.date %></td>
+                        <td><%= entry.entryTime %></td>
+                        <td><%= entry.exitTime %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <a href="/" class="home-link"><b>Go to Home Page</b></a>
+    </div>
+</body>
+</html>

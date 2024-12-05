@@ -1,0 +1,88 @@
+<!-- totalAttendanceDetails.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Attendance</title>
+    <style>
+            body {
+            font-family: Arial, sans-serif;
+            margin:2% 5%;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h2>Total Attendance Details Including Working Hours</h2>
+    <% if (startDate && endDate) { %>
+        <h2>From <%= startDate %> to <%= endDate %></h2>
+    <% } %>
+    <table>
+        <thead>
+            <tr>
+                <th>Sl No</th>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Work Days</th>
+                <th>Total Work Hours</th>
+                <th>Total Work Minutes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% let serialNo = 1; %>
+            <% data.forEach(employee => { %>
+                <tr>
+                    <td><%= serialNo++ %></td>
+                    <td><%= employee.employeeId %></td>
+                    <td><%= employee.employeeName %></td>
+                    <td><%= employee.workDays %></td>
+                    <td><%= employee.totalWorkHours %></td>
+                    <td><%= employee.totalWorkMinutes %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <a href="/" class="home-link"><b>Go to Home Page</b></a>
+</body>
+</html>

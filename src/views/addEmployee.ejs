@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: blue;
+        }
+
+        .nav-link {
+            /* text-decoration: none; */
+            color: #4CAF50;
+            display: block;
+            margin-top: 20px;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .nav-link:hover {
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Add Employee</h1>
+
+    <form id="employeeForm">
+        <!-- <form action="/employeeRegistration" method="post"> -->
+        <label for="employeeId">Employee ID:</label>
+        <input type="text" id="employeeId" name="employeeId" required>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="tagId">Tag ID:</label>
+        <input type="text" id="tagId" name="tagId" required>
+
+        <label for="departMent">Department:</label>
+        <select id="departMent" name="departMent" required>
+            <option value="OPERATION">OPERATION</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="TECH">TECH</option>
+        </select>
+
+        <!-- <button type="submit">Submit</button> -->
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+    <!-- Link to go back to home page -->
+    <a href="/" class="nav-link">Go to Home Page</a>
+    <script>
+        function submitForm() {
+            const form = document.getElementById('employeeForm');
+    
+            // Check if all form fields are filled out
+            if (!form.employeeId.value || !form.name.value || !form.tagId.value || !form.departMent.value) {
+                alert('Please fill out all fields');
+                return;
+            }
+    
+            fetch('/employeeRegistration', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    employeeId: form.employeeId.value,
+                    name: form.name.value,
+                    tagId: form.tagId.value,
+                    departMent: form.departMent.value,
+                }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Show alert on successful registration
+                        alert('Registration successful!');
+                        
+                        // Redirect to the home page with a success parameter
+                        window.location.href = '/?success=true';
+                    } else {
+                        // Handle error response from the server
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.message || 'Registration failed');
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(error.message || 'Registration failed. Please try again.');
+                });
+        }
+    </script>
+    
+    
+</body>
+
+</html>
